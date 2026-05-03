@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAYMOUR HIJAAB - Secure Admin Panel</title>
+    <title>TAYMOUR HIJAAB - Admin Panel</title>
     <style>
         * {
             margin: 0;
@@ -13,35 +13,34 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #5C3317 0%, #8B4513 100%);
+            background: #f5f5f5;
             min-height: 100vh;
+        }
+        
+        /* Login Page */
+        .login-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #5C3317 0%, #8B4513 100%);
         }
         
-        .login-box, .admin-panel {
+        .login-box {
             background: white;
-            padding: 30px;
+            padding: 40px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            max-width: 500px;
-            width: 100%;
+            width: 350px;
             text-align: center;
         }
         
-        .admin-panel {
-            max-width: 1200px;
-            display: none;
-        }
-        
-        h2 {
+        .login-box h2 {
             color: #5C3317;
             margin-bottom: 20px;
         }
         
-        input {
+        .login-box input {
             width: 100%;
             padding: 12px;
             margin: 10px 0;
@@ -50,52 +49,324 @@
             font-size: 16px;
         }
         
-        button {
-            background-color: #e94560;
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            background: #e94560;
             color: white;
-            padding: 12px 24px;
             border: none;
             border-radius: 8px;
-            cursor: pointer;
             font-size: 16px;
-            margin: 10px 5px;
+            cursor: pointer;
+            margin-top: 10px;
         }
         
-        button:hover {
-            background-color: #c7354e;
+        .login-error {
+            color: red;
+            margin-top: 10px;
+            font-size: 14px;
         }
         
-        .logout-btn {
-            background-color: #6c757d;
+        /* Language Selection Page */
+        .lang-select-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #5C3317 0%, #8B4513 100%);
+        }
+        
+        .lang-select-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 400px;
+            text-align: center;
+        }
+        
+        .lang-select-box h2 {
+            color: #5C3317;
             margin-bottom: 20px;
         }
         
-        .instruction-box {
-            background: #e8f4f8;
+        .lang-select-box p {
+            margin-bottom: 30px;
+            color: #666;
+        }
+        
+        .lang-options {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        
+        .lang-option {
+            background: #f9f5e8;
+            border: 2px solid #e0d5c0;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 120px;
+        }
+        
+        .lang-option:hover {
+            border-color: #e94560;
+            transform: translateY(-3px);
+        }
+        
+        .lang-option.selected {
+            border-color: #e94560;
+            background: #ffe8e0;
+        }
+        
+        .lang-option .flag {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .lang-option .lang-name {
+            font-weight: bold;
+            color: #5C3317;
+        }
+        
+        /* Main App with Sidebar */
+        .app-wrapper {
+            display: none;
+            min-height: 100vh;
+        }
+        
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #2C1810 0%, #3D2317 100%);
+            color: white;
+            transition: all 0.3s ease;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 100;
+            overflow-y: auto;
+        }
+        
+        .sidebar.collapsed {
+            width: 70px;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .sidebar-header h3 {
+            font-size: 1.2rem;
+            white-space: nowrap;
+        }
+        
+        .sidebar.collapsed .sidebar-header h3 {
+            display: none;
+        }
+        
+        .toggle-sidebar {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 1.2rem;
+        }
+        
+        .nav-menu {
+            list-style: none;
+            padding: 20px 0;
+        }
+        
+        .nav-item {
+            margin-bottom: 5px;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .nav-link.active {
+            background: #e94560;
+            color: white;
+            border-left: 4px solid white;
+        }
+        
+        .nav-icon {
+            font-size: 1.3rem;
+            min-width: 30px;
+        }
+        
+        .nav-text {
+            margin-left: 10px;
+            white-space: nowrap;
+        }
+        
+        .sidebar.collapsed .nav-text {
+            display: none;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 20px;
+            transition: margin-left 0.3s ease;
+        }
+        
+        .sidebar.collapsed ~ .main-content {
+            margin-left: 70px;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #5C3317 0%, #8B4513 100%);
+            color: white;
             padding: 20px;
             border-radius: 10px;
             margin-bottom: 20px;
-            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
         }
         
-        .instruction-box code {
-            background: #f0f0f0;
-            padding: 2px 5px;
-            border-radius: 3px;
-            font-family: monospace;
-            font-size: 12px;
+        .header h1 {
+            font-size: 1.5rem;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e94560;
+        }
+        
+        .stat-card .label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background: #f9f5e8;
+            color: #5C3317;
+        }
+        
+        .status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
             display: inline-block;
-            margin: 5px 0;
+        }
+        
+        .status-pending { background: #ffc107; color: #333; }
+        .status-approved { background: #28a745; color: white; }
+        .status-completed { background: #28a745; color: white; }
+        
+        /* Forms */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #5C3317;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .product-form {
+            background: #f9f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
         
         .product-list {
-            max-height: 500px;
+            max-height: 400px;
             overflow-y: auto;
-            margin-top: 20px;
         }
         
         .product-item {
-            background: #f9f5e8;
+            background: white;
             padding: 15px;
             margin: 10px 0;
             border-radius: 8px;
@@ -103,95 +374,681 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+            border: 1px solid #eee;
+        }
+        
+        .product-actions {
+            display: flex;
             gap: 10px;
         }
         
-        .error-msg {
-            color: red;
-            margin-top: 10px;
+        .btn-small {
+            padding: 5px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
         }
         
-        .warning-box {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            padding: 15px;
+        .btn-primary { background: #e94560; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-warning { background: #ffc107; color: #333; }
+        .btn-info { background: #17a2b8; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-wa { background: #25D366; color: white; }
+        
+        .action-btns {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .receipt {
+            font-family: monospace;
+            background: #f9f5e8;
+            padding: 20px;
             border-radius: 10px;
-            margin-bottom: 20px;
-            text-align: left;
+            margin: 15px 0;
+        }
+        
+        .receipt-line {
+            border-top: 1px dashed #ccc;
+            margin: 10px 0;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 2000;
+            animation: fadeInOut 3s ease;
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(20px); }
+            15% { opacity: 1; transform: translateY(0); }
+            85% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(20px); }
         }
         
         @media (max-width: 768px) {
-            .product-item {
-                flex-direction: column;
-                text-align: center;
+            .sidebar {
+                width: 200px;
+            }
+            .main-content {
+                margin-left: 200px;
+            }
+            .sidebar.collapsed {
+                width: 50px;
+            }
+            .sidebar.collapsed ~ .main-content {
+                margin-left: 50px;
+            }
+            th, td {
+                padding: 8px;
+                font-size: 12px;
             }
         }
     </style>
 </head>
 <body>
 
-<div id="loginBox" class="login-box">
-    <h2>🔐 TAYMOUR HIJAAB</h2>
-    <h3>Secure Admin Login</h3>
-    <input type="password" id="adminPassword" placeholder="Enter admin password" autocomplete="off">
-    <button onclick="checkLogin()">Login</button>
-    <div id="loginError" class="error-msg"></div>
+<!-- Language Selection Page (First time only) -->
+<div id="langSelectPage" class="lang-select-container">
+    <div class="lang-select-box">
+        <h2 id="langSelectTitle">🌍 Select Your Language</h2>
+        <p id="langSelectDesc">Choose your preferred language for the admin panel</p>
+        <div class="lang-options">
+            <div class="lang-option" onclick="selectLanguage('en')">
+                <div class="flag">ENG</div>
+                <div class="lang-name">English</div>
+            </div>
+            <div class="lang-option" onclick="selectLanguage('sw')">
+                <div class="flag">SW</div>
+                <div class="lang-name">Kiswahili</div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div id="adminPanel" class="admin-panel">
-    <button onclick="logout()" class="logout-btn">🚪 Logout</button>
-    
-    <div class="warning-box">
-        ⚠️ <strong>Security Notice:</strong> This is a secure admin area. 
-        Do not share your password with anyone. Always log out when finished.
+<!-- Login Page -->
+<div id="loginPage" class="login-container" style="display: none;">
+    <div class="login-box">
+        <h2>🔐 TAYMOUR HIJAAB</h2>
+        <h3 id="loginTitle">Admin Login</h3>
+        <input type="password" id="adminPassword" placeholder="Enter admin password">
+        <button id="loginBtn" onclick="checkLogin()">Login</button>
+        <div id="loginError" class="login-error"></div>
     </div>
-    
-    <div class="instruction-box">
-        📝 <strong>How to Manage Products (Secure Method):</strong><br><br>
+</div>
+
+<!-- Main App -->
+<div id="appWrapper" class="app-wrapper">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3 id="menuTitle">📦 MENU</h3>
+                <button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <div class="nav-link active" onclick="switchTab('dashboard')">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text" id="navDashboard">Dashboard</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="switchTab('products')">
+                        <span class="nav-icon">🛍️</span>
+                        <span class="nav-text" id="navProducts">Manage Products</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="switchTab('orders')">
+                        <span class="nav-icon">📋</span>
+                        <span class="nav-text" id="navOrders">Orders & Approval</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="switchTab('payments')">
+                        <span class="nav-icon">💰</span>
+                        <span class="nav-text" id="navPayments">Payment Statement</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="switchTab('receipts')">
+                        <span class="nav-icon">🧾</span>
+                        <span class="nav-text" id="navReceipts">Receipts</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="switchTab('settings')">
+                        <span class="nav-icon">⚙️</span>
+                        <span class="nav-text" id="navSettings">Settings</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
         
-        <strong>To ADD a new product:</strong><br>
-        1. Open <code>script.js</code> in Notepad++ or VS Code<br>
-        2. Find the <strong>products</strong> array at the top (line ~6)<br>
-        3. Add a new line with your product:<br>
-        <code>{ id: 17, name: "New Product", price: 50000, image: "new-image.jpg", description: "Product description" },</code><br>
-        4. Save the file and upload to your server<br>
-        5. Refresh the website<br><br>
-        
-        <strong>To EDIT a product:</strong><br>
-        - Change the name, price, or description in <code>script.js</code><br><br>
-        
-        <strong>To DELETE a product:</strong><br>
-        - Remove the product line from <code>script.js</code><br><br>
-        
-        <strong>To ADD images:</strong><br>
-        - Upload image files to the <code>images/</code> folder<br>
-        - Use the exact filename in the product data<br><br>
-        
-        <strong>⚠️ Important Security Tips:</strong><br>
-        - Always keep your password secure<br>
-        - Change the password regularly<br>
-        - Only access this panel from trusted devices<br>
-        - Log out when you're done
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1 id="mainTitle">📦 TAYMOUR HIJAAB - Admin Panel</h1>
+                <div class="lang-buttons">
+                    <button class="btn-small" onclick="changeLanguageFromSettings('en')">🇬🇧 EN</button>
+                    <button class="btn-small" onclick="changeLanguageFromSettings('sw')">🇹🇿 SW</button>
+                    <button id="logoutHeaderBtn" onclick="logout()" class="btn-small" style="background:#6c757d;">🚪</button>
+                </div>
+            </div>
+            
+            <!-- Dashboard Tab -->
+            <div id="dashboardTab" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="number" id="statTotalOrders">0</div>
+                        <div class="label" id="statTotalOrdersLabel">Total Orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="statPendingOrders">0</div>
+                        <div class="label" id="statPendingLabel">Pending Approval</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="statApprovedOrders">0</div>
+                        <div class="label" id="statApprovedLabel">Approved Orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="statTotalRevenue">TZS 0</div>
+                        <div class="label" id="statRevenueLabel">Total Revenue</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="statProductsCount">0</div>
+                        <div class="label" id="statProductsLabel">Products</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Products Tab -->
+            <div id="productsTab" class="tab-content">
+                <div class="product-form">
+                    <h3 id="addProductTitle">➕ Add New Product</h3>
+                    <div class="form-group">
+                        <label id="prodNameLabel">Product Name</label>
+                        <input type="text" id="prodName" placeholder="e.g., Premium Silk Hijaab">
+                    </div>
+                    <div class="form-group">
+                        <label id="prodPriceLabel">Price (TZS)</label>
+                        <input type="number" id="prodPrice" placeholder="e.g., 35000">
+                    </div>
+                    <div class="form-group">
+                        <label id="prodImageLabel">Image Filename</label>
+                        <input type="text" id="prodImage" placeholder="e.g., silk-hijab.jpg">
+                    </div>
+                    <div class="form-group">
+                        <label id="prodDescLabel">Description</label>
+                        <textarea id="prodDesc" rows="3" placeholder="Product description"></textarea>
+                    </div>
+                    <button onclick="addProduct()" class="btn-primary" id="addProductBtn">➕ Add Product</button>
+                    <div id="addSuccess" class="success-msg"></div>
+                </div>
+                <h3 id="currentProductsTitle">📋 Current Products</h3>
+                <div class="product-list" id="productsList"></div>
+            </div>
+            
+            <!-- Orders Tab -->
+            <div id="ordersTab" class="tab-content">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th id="thOrderId">ID</th>
+                                <th id="thDate">Date</th>
+                                <th id="thCustomer">Customer</th>
+                                <th id="thPhone">Phone</th>
+                                <th id="thItems">Items</th>
+                                <th id="thTotal">Total</th>
+                                <th id="thPayment">Payment</th>
+                                <th id="thStatus">Status</th>
+                                <th id="thActions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Payments Tab -->
+            <div id="paymentsTab" class="tab-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="number" id="payTotalOrders">0</div>
+                        <div class="label" id="payTotalOrdersLabel">Total Orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="payPendingAmount">TZS 0</div>
+                        <div class="label" id="payPendingLabel">Pending Payment</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="payApprovedAmount">TZS 0</div>
+                        <div class="label" id="payApprovedLabel">Approved Payment</div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th id="payThOrderId">Order ID</th>
+                                <th id="payThCustomer">Customer</th>
+                                <th id="payThAmount">Amount</th>
+                                <th id="payThStatus">Status</th>
+                                <th id="payThDate">Date</th>
+                                <th id="payThAction">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Receipts Tab -->
+            <div id="receiptsTab" class="tab-content">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th id="recThReceipt">Receipt #</th>
+                                <th id="recThOrderId">Order ID</th>
+                                <th id="recThCustomer">Customer</th>
+                                <th id="recThDate">Date</th>
+                                <th id="recThAmount">Amount</th>
+                                <th id="recThAction">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="receiptsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Settings Tab -->
+            <div id="settingsTab" class="tab-content">
+                <h3 id="settingsTitle">⚙️ Settings</h3>
+                <div class="form-section">
+                    <h4 id="languageSettingsTitle">🌐 Language Settings</h4>
+                    <div class="form-group">
+                        <label id="selectLanguageLabel">Select Language</label>
+                        <div class="lang-options" style="justify-content: flex-start; gap: 15px;">
+                            <div class="lang-option" onclick="changeLanguageFromSettings('en')" style="width: 100px; padding: 10px;">
+                                <div class="flag">ENG</div>
+                                <div class="lang-name">English</div>
+                            </div>
+                            <div class="lang-option" onclick="changeLanguageFromSettings('sw')" style="width: 100px; padding: 10px;">
+                                <div class="flag">SW</div>
+                                <div class="lang-name">Kiswahili</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section" style="margin-top: 20px;">
+                    <h4 id="passwordSettingsTitle">🔐 Password Settings</h4>
+                    <div class="form-group">
+                        <label id="currentPasswordLabel">Current Password</label>
+                        <input type="password" id="currentPassword" placeholder="Enter current password">
+                    </div>
+                    <div class="form-group">
+                        <label id="newPasswordLabel">New Password</label>
+                        <input type="password" id="newPassword" placeholder="Enter new password">
+                    </div>
+                    <div class="form-group">
+                        <label id="confirmPasswordLabel">Confirm New Password</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm new password">
+                    </div>
+                    <button onclick="changePassword()" class="btn-primary" id="changePasswordBtn">Change Password</button>
+                    <div id="passwordMsg" class="success-msg"></div>
+                </div>
+            </div>
+        </div>
     </div>
-    
-    <h2>📋 Current Products</h2>
-    <div id="productsList" class="product-list"></div>
+</div>
+
+<!-- Receipt Modal -->
+<div id="receiptModal" class="modal">
+    <div class="modal-content">
+        <div id="receiptContent"></div>
+        <button onclick="closeReceiptModal()" class="btn-primary" id="closeReceiptBtn" style="width:100%; margin-top:15px;">Close</button>
+        <button onclick="printReceipt()" class="btn-success" id="printReceiptBtn" style="width:100%; margin-top:10px;">🖨️ Print Receipt</button>
+    </div>
 </div>
 
 <script>
     // ========================================
-    // SECURE ADMIN PANEL
+    // CONFIGURATION
     // ========================================
+    let currentLanguage = localStorage.getItem('taymour_language') || null;
+    let hasSelectedLanguage = localStorage.getItem('taymour_language_selected') === 'true';
+    let products = [];
+    let orders = [];
+    let currentReceiptIndex = null;
     
-    // CHANGE THIS PASSWORD TO SOMETHING SECURE!
-    const MASTER_PASSWORD = "taymour2024";
+    // Default products
+    const defaultProducts = [
+        { id: 1, name: "Premium Silk Hijaab", price: 35000, image: "silk-hijab.jpg", description: "Luxurious silk hijaab" },
+        { id: 2, name: "Chiffon Everyday Hijaab", price: 25000, image: "chiffon-hijab.jpg", description: "Lightweight chiffon hijaab" },
+        { id: 3, name: "Jersey Modal Hijaab", price: 30000, image: "jersey-hijab.jpg", description: "Stretchy jersey hijaab" },
+        { id: 4, name: "Embellished Evening Hijaab", price: 55000, image: "evening-hijab.jpg", description: "Beautiful embellishments" },
+        { id: 5, name: "Cotton Basic Hijaab", price: 20000, image: "cotton-hijab.jpg", description: "100% cotton hijaab" },
+        { id: 6, name: "Wool Winter Hijaab", price: 45000, image: "wool-hijab.jpg", description: "Warm wool blend" },
+        { id: 7, name: "Sport Active Hijaab", price: 35000, image: "sport-hijab.jpg", description: "Breathable active hijaab" },
+        { id: 8, name: "Instant Hijaab", price: 40000, image: "instant-hijab.jpg", description: "Ready-to-wear hijaab" },
+        { id: 9, name: "Classic Black Abaya", price: 65000, image: "abaya-black.jpg", description: "Elegant black abaya" },
+        { id: 10, name: "Embroidered Maroon Abaya", price: 85000, image: "abaya-maroon.jpg", description: "Beautiful embroidered maroon abaya" },
+        { id: 11, name: "Navy Blue Open Abaya", price: 75000, image: "abaya-navy.jpg", description: "Stylish open front abaya" },
+        { id: 12, name: "Beige Casual Abaya", price: 55000, image: "abaya-beige.jpg", description: "Comfortable everyday abaya" },
+        { id: 13, name: "Premium Lace Abaya", price: 120000, image: "abaya-lace.jpg", description: "Luxury lace detailing abaya" },
+        { id: 14, name: "Grey Chiffon Abaya", price: 70000, image: "abaya-grey.jpg", description: "Lightweight chiffon abaya" },
+        { id: 15, name: "Royal Blue Abaya", price: 80000, image: "abaya-royal.jpg", description: "Rich royal blue color" },
+        { id: 16, name: "White Wedding Abaya", price: 150000, image: "abaya-white.jpg", description: "Premium white abaya for weddings" }
+    ];
     
-    // Rate limiting for failed attempts
+    // ========================================
+    // TRANSLATIONS
+    // ========================================
+    const translations = {
+        en: {
+            // Language selection
+            langSelectTitle: "🌍 Select Your Language",
+            langSelectDesc: "Choose your preferred language for the admin panel",
+            
+            // Login
+            loginTitle: "Admin Login",
+            loginBtn: "Login",
+            loginError: "Incorrect password. Please try again.",
+            
+            // Sidebar
+            menuTitle: "📦 MENU",
+            navDashboard: "Dashboard",
+            navProducts: "Manage Products",
+            navOrders: "Orders & Approval",
+            navPayments: "Payment Statement",
+            navReceipts: "Receipts",
+            navSettings: "Settings",
+            mainTitle: "📦 TAYMOUR HIJAAB - Admin Panel",
+            
+            // Dashboard
+            statTotalOrdersLabel: "Total Orders",
+            statPendingLabel: "Pending Approval",
+            statApprovedLabel: "Approved Orders",
+            statRevenueLabel: "Total Revenue",
+            statProductsLabel: "Products",
+            
+            // Products
+            addProductTitle: "➕ Add New Product",
+            prodNameLabel: "Product Name",
+            prodPriceLabel: "Price (TZS)",
+            prodImageLabel: "Image Filename",
+            prodDescLabel: "Description",
+            addProductBtn: "➕ Add Product",
+            currentProductsTitle: "📋 Current Products",
+            editBtn: "✏️ Edit",
+            deleteBtn: "🗑️ Delete",
+            noProducts: "No products. Add your first product!",
+            productAdded: "✅ Product added successfully!",
+            productUpdated: "✅ Product updated!",
+            productDeleted: "✅ Product deleted!",
+            fillRequired: "Please fill in Name, Price, and Image",
+            
+            // Orders
+            thOrderId: "ID",
+            thDate: "Date",
+            thCustomer: "Customer",
+            thPhone: "Phone",
+            thItems: "Items",
+            thTotal: "Total",
+            thPayment: "Payment",
+            thStatus: "Status",
+            thActions: "Actions",
+            approveBtn: "✅ Approve",
+            viewBtn: "📋 View",
+            messageBtn: "💬 Message",
+            receiptBtn: "🧾 Receipt",
+            paymentApproved: "✅ Approved",
+            paymentPending: "⏳ Pending",
+            orderCompleted: "✅ Completed",
+            orderProcessing: "🔄 Processing",
+            orderPending: "⏳ Pending",
+            statusPending: "Pending",
+            statusProcessing: "Processing",
+            statusCompleted: "Completed",
+            noOrders: "No orders yet",
+            
+            // Payments
+            payTotalOrdersLabel: "Total Orders",
+            payPendingLabel: "Pending Payment",
+            payApprovedLabel: "Approved Payment",
+            payThOrderId: "Order ID",
+            payThCustomer: "Customer",
+            payThAmount: "Amount",
+            payThStatus: "Status",
+            payThDate: "Date",
+            payThAction: "Action",
+            noPayments: "No payments yet",
+            
+            // Receipts
+            recThReceipt: "Receipt #",
+            recThOrderId: "Order ID",
+            recThCustomer: "Customer",
+            recThDate: "Date",
+            recThAmount: "Amount",
+            recThAction: "Action",
+            noReceipts: "No receipts generated yet",
+            viewReceiptBtn: "View",
+            closeBtn: "Close",
+            printBtn: "🖨️ Print",
+            
+            // Settings
+            settingsTitle: "⚙️ Settings",
+            languageSettingsTitle: "🌐 Language Settings",
+            selectLanguageLabel: "Select Language",
+            passwordSettingsTitle: "🔐 Password Settings",
+            currentPasswordLabel: "Current Password",
+            newPasswordLabel: "New Password",
+            confirmPasswordLabel: "Confirm New Password",
+            changePasswordBtn: "Change Password",
+            
+            // Messages
+            paymentApprovedMsg: "✅ Payment for Order #",
+            statusUpdatedMsg: "✅ Order #",
+            statusChangedMsg: " status updated to ",
+            receiptSent: "✅ Receipt sent to customer via WhatsApp!",
+            sendingReceipt: "📱 Opening WhatsApp..."
+        },
+        sw: {
+            // Language selection
+            langSelectTitle: "🌍 Chagua Lugha Yako",
+            langSelectDesc: "Chagua lugha unayopenda kwa paneli ya msimamizi",
+            
+            // Login
+            loginTitle: "Kuingia kwa Msimamizi",
+            loginBtn: "Ingia",
+            loginError: "Nenosiri si sahihi. Tafadhali jaribu tena.",
+            
+            // Sidebar
+            menuTitle: "📦 MENU",
+            navDashboard: "Dashibodi",
+            navProducts: "Simamia Bidhaa",
+            navOrders: "Maagizo na Kuidhinishwa",
+            navPayments: "Taarifa za Malipo",
+            navReceipts: "Stakabadhi",
+            navSettings: "Mipangilio",
+            mainTitle: "📦 TAYMOUR HIJAAB - Paneli ya Msimamizi",
+            
+            // Dashboard
+            statTotalOrdersLabel: "Jumla ya Maagizo",
+            statPendingLabel: "Yanayosubiri Kuidhinishwa",
+            statApprovedLabel: "Maagizo Yaliyoidhinishwa",
+            statRevenueLabel: "Jumla ya Mapato",
+            statProductsLabel: "Bidhaa",
+            
+            // Products
+            addProductTitle: "➕ Ongeza Bidhaa Mpya",
+            prodNameLabel: "Jina la Bidhaa",
+            prodPriceLabel: "Bei (TZS)",
+            prodImageLabel: "Jina la Picha",
+            prodDescLabel: "Maelezo",
+            addProductBtn: "➕ Ongeza Bidhaa",
+            currentProductsTitle: "📋 Bidhaa Zilizopo",
+            editBtn: "✏️ Badilisha",
+            deleteBtn: "🗑️ Futa",
+            noProducts: "Hakuna bidhaa. Ongeza bidhaa yako ya kwanza!",
+            productAdded: "✅ Bidhaa imeongezwa kikamilifu!",
+            productUpdated: "✅ Bidhaa imebadilishwa!",
+            productDeleted: "✅ Bidhaa imefutwa!",
+            fillRequired: "Tafadhali jaza Jina, Bei, na Picha",
+            
+            // Orders
+            thOrderId: "Kitambulisho",
+            thDate: "Tarehe",
+            thCustomer: "Mteja",
+            thPhone: "Simu",
+            thItems: "Bidhaa",
+            thTotal: "Jumla",
+            thPayment: "Malipo",
+            thStatus: "Hali",
+            thActions: "Vitendo",
+            approveBtn: "✅ Kubali",
+            viewBtn: "📋 Tazama",
+            messageBtn: "💬 Tumma Ujumbe",
+            receiptBtn: "🧾 Stakabadhi",
+            paymentApproved: "✅ Imekubaliwa",
+            paymentPending: "⏳ Inasubiri",
+            orderCompleted: "✅ Imekamilika",
+            orderProcessing: "🔄 Inachakatwa",
+            orderPending: "⏳ Inasubiri",
+            statusPending: "Inasubiri",
+            statusProcessing: "Inachakatwa",
+            statusCompleted: "Imekamilika",
+            noOrders: "Bado hakuna maagizo",
+            
+            // Payments
+            payTotalOrdersLabel: "Jumla ya Maagizo",
+            payPendingLabel: "Malipo Yanayosubiri",
+            payApprovedLabel: "Malipo Yaliyokubaliwa",
+            payThOrderId: "Kitambulisho",
+            payThCustomer: "Mteja",
+            payThAmount: "Kiasi",
+            payThStatus: "Hali",
+            payThDate: "Tarehe",
+            payThAction: "Kitendo",
+            noPayments: "Bado hakuna malipo",
+            
+            // Receipts
+            recThReceipt: "Stakabadhi #",
+            recThOrderId: "Kitambulisho",
+            recThCustomer: "Mteja",
+            recThDate: "Tarehe",
+            recThAmount: "Kiasi",
+            recThAction: "Kitendo",
+            noReceipts: "Bado hakuna stakabadhi zilizotengenezwa",
+            viewReceiptBtn: "Tazama",
+            closeBtn: "Funga",
+            printBtn: "🖨️ Chapisha",
+            
+            // Settings
+            settingsTitle: "⚙️ Mipangilio",
+            languageSettingsTitle: "🌐 Mipangilio ya Lugha",
+            selectLanguageLabel: "Chagua Lugha",
+            passwordSettingsTitle: "🔐 Mipangilio ya Nenosiri",
+            currentPasswordLabel: "Nenosiri la Sasa",
+            newPasswordLabel: "Nenosiri Mpya",
+            confirmPasswordLabel: "Thibitisha Nenosiri Mpya",
+            changePasswordBtn: "Badilisha Nenosiri",
+            
+            // Messages
+            paymentApprovedMsg: "✅ Malipo ya Agizo #",
+            statusUpdatedMsg: "✅ Agizo #",
+            statusChangedMsg: " hali imebadilishwa kuwa ",
+            receiptSent: "✅ Stakabadhi imetumwa kwa mteja kwa WhatsApp!",
+            sendingReceipt: "📱 Inafungua WhatsApp..."
+        }
+    };
+    
+    function t(key) {
+        return translations[currentLanguage][key] || translations['en'][key] || key;
+    }
+    
+    function updateAllText() {
+        // Update all elements with data-i18n or by ID
+        const elements = ['loginTitle', 'loginBtn', 'menuTitle', 'navDashboard', 'navProducts', 'navOrders', 'navPayments', 'navReceipts', 'navSettings', 'mainTitle', 'statTotalOrdersLabel', 'statPendingLabel', 'statApprovedLabel', 'statRevenueLabel', 'statProductsLabel', 'addProductTitle', 'prodNameLabel', 'prodPriceLabel', 'prodImageLabel', 'prodDescLabel', 'addProductBtn', 'currentProductsTitle', 'thOrderId', 'thDate', 'thCustomer', 'thPhone', 'thItems', 'thTotal', 'thPayment', 'thStatus', 'thActions', 'payTotalOrdersLabel', 'payPendingLabel', 'payApprovedLabel', 'payThOrderId', 'payThCustomer', 'payThAmount', 'payThStatus', 'payThDate', 'payThAction', 'recThReceipt', 'recThOrderId', 'recThCustomer', 'recThDate', 'recThAmount', 'recThAction', 'settingsTitle', 'languageSettingsTitle', 'selectLanguageLabel', 'passwordSettingsTitle', 'currentPasswordLabel', 'newPasswordLabel', 'confirmPasswordLabel', 'changePasswordBtn', 'closeReceiptBtn', 'printReceiptBtn'];
+        
+        elements.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerText = t(id);
+        });
+        
+        // Update lang select page
+        const langSelectTitle = document.getElementById('langSelectTitle');
+        const langSelectDesc = document.getElementById('langSelectDesc');
+        if (langSelectTitle) langSelectTitle.innerText = t('langSelectTitle');
+        if (langSelectDesc) langSelectDesc.innerText = t('langSelectDesc');
+    }
+    
+    // ========================================
+    // LANGUAGE SELECTION
+    // ========================================
+    function selectLanguage(lang) {
+        currentLanguage = lang;
+        localStorage.setItem('taymour_language', lang);
+        localStorage.setItem('taymour_language_selected', 'true');
+        
+        // Hide language selection page
+        document.getElementById('langSelectPage').style.display = 'none';
+        // Show login page
+        document.getElementById('loginPage').style.display = 'flex';
+        
+        updateAllText();
+    }
+    
+    function changeLanguageFromSettings(lang) {
+        currentLanguage = lang;
+        localStorage.setItem('taymour_language', lang);
+        updateAllText();
+        loadAllData();
+        showToast(t('productUpdated'));
+    }
+    
+    // ========================================
+    // AUTHENTICATION
+    // ========================================
+    let MASTER_PASSWORD = localStorage.getItem('taymour_admin_password') || 'taymour2024';
     let failedAttempts = 0;
     let lockUntil = 0;
     
     function checkLogin() {
-        // Rate limiting check
         if (Date.now() < lockUntil) {
             const waitSeconds = Math.ceil((lockUntil - Date.now()) / 1000);
             document.getElementById('loginError').innerText = `Too many attempts. Please wait ${waitSeconds} seconds.`;
@@ -201,19 +1058,15 @@
         const password = document.getElementById('adminPassword').value;
         
         if (password === MASTER_PASSWORD) {
-            // Successful login - reset failed attempts
             failedAttempts = 0;
-            document.getElementById('loginBox').style.display = 'none';
-            document.getElementById('adminPanel').style.display = 'block';
-            loadProducts();
-            // Log successful login to console (for audit)
-            console.log(`Admin login at ${new Date().toISOString()}`);
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('appWrapper').style.display = 'block';
+            loadAllData();
         } else {
             failedAttempts++;
-            // Lock for 30 seconds after 3 failed attempts
             if (failedAttempts >= 3) {
                 lockUntil = Date.now() + 30000;
-                document.getElementById('loginError').innerText = 'Too many failed attempts. Account locked for 30 seconds.';
+                document.getElementById('loginError').innerText = 'Too many failed attempts. Locked for 30 seconds.';
             } else {
                 document.getElementById('loginError').innerText = `Incorrect password. ${3 - failedAttempts} attempts remaining.`;
             }
@@ -221,67 +1074,386 @@
     }
     
     function logout() {
-        document.getElementById('loginBox').style.display = 'block';
-        document.getElementById('adminPanel').style.display = 'none';
+        document.getElementById('appWrapper').style.display = 'none';
+        document.getElementById('loginPage').style.display = 'flex';
         document.getElementById('adminPassword').value = '';
         document.getElementById('loginError').innerText = '';
         failedAttempts = 0;
         lockUntil = 0;
-        console.log(`Admin logout at ${new Date().toISOString()}`);
     }
     
-    // Prevent browser from saving password to autofill incorrectly
-    document.getElementById('adminPassword').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            checkLogin();
-        }
-    });
-    
-    function loadProducts() {
-        // Quick security check - ensure we have valid products array from script.js
-        // Since script.js is loaded on the main pages, we need to reference it
-        if (typeof products !== 'undefined') {
-            displayProducts(products);
-            document.getElementById('productsList').innerHTML = `
-                <div style="text-align:center; padding:20px;">
-                    <p>✅ Products loaded successfully!</p>
-                    <p style="font-size:12px; color:#666;">Found ${products.length} products</p>
-                </div>
-            ` + document.getElementById('productsList').innerHTML;
-        } else {
-            // Fallback: show instruction to check script.js
-            document.getElementById('productsList').innerHTML = `
-                <div class="instruction-box">
-                    ⚠️ Could not load products automatically.<br><br>
-                    Please open <code>script.js</code> in a text editor to view and edit products directly.
-                </div>
-            `;
-        }
-    }
-    
-    function displayProducts(productArray) {
-        const container = document.getElementById('productsList');
-        if (!productArray || productArray.length === 0) {
-            container.innerHTML = '<p>No products found. Add products to script.js</p>';
+    function changePassword() {
+        const current = document.getElementById('currentPassword').value;
+        const newPass = document.getElementById('newPassword').value;
+        const confirm = document.getElementById('confirmPassword').value;
+        
+        if (current !== MASTER_PASSWORD) {
+            document.getElementById('passwordMsg').innerHTML = '<span style="color:red;">Current password is incorrect</span>';
             return;
         }
         
-        container.innerHTML = productArray.map(p => `
+        if (newPass !== confirm) {
+            document.getElementById('passwordMsg').innerHTML = '<span style="color:red;">New passwords do not match</span>';
+            return;
+        }
+        
+        if (newPass.length < 6) {
+            document.getElementById('passwordMsg').innerHTML = '<span style="color:red;">Password must be at least 6 characters</span>';
+            return;
+        }
+        
+        MASTER_PASSWORD = newPass;
+        localStorage.setItem('taymour_admin_password', newPass);
+        document.getElementById('passwordMsg').innerHTML = '<span style="color:green;">✅ Password changed successfully!</span>';
+        document.getElementById('currentPassword').value = '';
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmPassword').value = '';
+        
+        setTimeout(() => {
+            document.getElementById('passwordMsg').innerHTML = '';
+        }, 3000);
+    }
+    
+    // ========================================
+    // PRODUCT MANAGEMENT
+    // ========================================
+    function loadProducts() {
+        const saved = localStorage.getItem('taymour_products');
+        if (saved) {
+            products = JSON.parse(saved);
+        } else {
+            products = JSON.parse(JSON.stringify(defaultProducts));
+            saveProducts();
+        }
+        displayProducts();
+        document.getElementById('statProductsCount').innerText = products.length;
+    }
+    
+    function saveProducts() {
+        localStorage.setItem('taymour_products', JSON.stringify(products));
+        window.taymourProducts = products;
+    }
+    
+    function displayProducts() {
+        const container = document.getElementById('productsList');
+        if (!products.length) {
+            container.innerHTML = `<p style="text-align:center;">${t('noProducts')}</p>`;
+            return;
+        }
+        
+        container.innerHTML = products.map(product => `
             <div class="product-item">
-                <div style="flex:1">
-                    <strong>${escapeHtml(p.name)}</strong><br>
-                    TZS ${p.price.toLocaleString()} | Image: ${escapeHtml(p.image)}<br>
-                    <small>${escapeHtml(p.description)}</small>
-                </div>
                 <div>
-                    <span style="font-size:12px; color:#999;">ID: ${p.id}</span>
+                    <strong>${escapeHtml(product.name)}</strong><br>
+                    TZS ${product.price.toLocaleString()} | Image: ${escapeHtml(product.image)}<br>
+                    <small>${escapeHtml(product.description)}</small>
+                </div>
+                <div class="product-actions">
+                    <button class="btn-small btn-warning" onclick="editProduct(${product.id})">${t('editBtn')}</button>
+                    <button class="btn-small btn-danger" onclick="deleteProduct(${product.id})">${t('deleteBtn')}</button>
                 </div>
             </div>
         `).join('');
     }
     
-    // Simple HTML escape for display
+    function addProduct() {
+        const name = document.getElementById('prodName').value;
+        const price = document.getElementById('prodPrice').value;
+        const image = document.getElementById('prodImage').value;
+        const description = document.getElementById('prodDesc').value;
+        
+        if (!name || !price || !image) {
+            alert(t('fillRequired'));
+            return;
+        }
+        
+        const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+        products.push({
+            id: newId,
+            name: name,
+            price: parseInt(price),
+            image: image,
+            description: description || ""
+        });
+        
+        saveProducts();
+        displayProducts();
+        
+        document.getElementById('prodName').value = '';
+        document.getElementById('prodPrice').value = '';
+        document.getElementById('prodImage').value = '';
+        document.getElementById('prodDesc').value = '';
+        
+        showToast(t('productAdded'));
+        document.getElementById('statProductsCount').innerText = products.length;
+    }
+    
+    function editProduct(id) {
+        const product = products.find(p => p.id === id);
+        if (!product) return;
+        
+        const newName = prompt(t('editBtn') + ': ' + product.name, product.name);
+        if (newName && newName.trim()) product.name = newName.trim();
+        
+        const newPrice = prompt('Edit price:', product.price);
+        if (newPrice && !isNaN(newPrice)) product.price = parseInt(newPrice);
+        
+        const newImage = prompt('Edit image filename:', product.image);
+        if (newImage && newImage.trim()) product.image = newImage.trim();
+        
+        const newDesc = prompt('Edit description:', product.description);
+        if (newDesc !== null) product.description = newDesc;
+        
+        saveProducts();
+        displayProducts();
+        showToast(t('productUpdated'));
+    }
+    
+    function deleteProduct(id) {
+        if (confirm('Are you sure?')) {
+            products = products.filter(p => p.id !== id);
+            saveProducts();
+            displayProducts();
+            showToast(t('productDeleted'));
+            document.getElementById('statProductsCount').innerText = products.length;
+        }
+    }
+    
+    // ========================================
+    // ORDERS MANAGEMENT
+    // ========================================
+    function loadOrders() {
+        const saved = localStorage.getItem('taymour_orders');
+        orders = saved ? JSON.parse(saved) : [];
+    }
+    
+    function saveOrders() {
+        localStorage.setItem('taymour_orders', JSON.stringify(orders));
+    }
+    
+    function displayOrders() {
+        const tbody = document.getElementById('ordersTableBody');
+        if (!orders.length) {
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">${t('noOrders')}</td></tr>`;
+            return;
+        }
+        
+        tbody.innerHTML = orders.map((order, index) => {
+            const paymentStatus = order.paymentStatus || 'pending';
+            const orderStatus = order.orderStatus || 'pending';
+            return `
+                <tr>
+                    <td>#${index + 1}</td>
+                    <td>${new Date(order.date).toLocaleDateString()}</td>
+                    <td>${escapeHtml(order.name)}</td>
+                    <td>${escapeHtml(order.phone)}</td>
+                    <td>${order.items?.length || 0} item(s)</td>
+                    <td>TZS ${(order.total || 0).toLocaleString()}</td>
+                    <td><span class="status ${paymentStatus === 'approved' ? 'status-approved' : 'status-pending'}">${paymentStatus === 'approved' ? t('paymentApproved') : t('paymentPending')}</span></td>
+                    <td><span class="status ${orderStatus === 'completed' ? 'status-approved' : (orderStatus === 'processing' ? 'status-processing' : 'status-pending')}">${orderStatus === 'completed' ? t('orderCompleted') : (orderStatus === 'processing' ? t('orderProcessing') : t('orderPending'))}</span></td>
+                    <td class="action-btns">
+                        ${paymentStatus !== 'approved' ? `<button class="btn-small btn-success" onclick="approvePayment(${index})">${t('approveBtn')}</button>` : ''}
+                        <select class="status-select" onchange="updateOrderStatus(${index}, this.value)">
+                            <option value="pending" ${orderStatus === 'pending' ? 'selected' : ''}>${t('statusPending')}</option>
+                            <option value="processing" ${orderStatus === 'processing' ? 'selected' : ''}>${t('statusProcessing')}</option>
+                            <option value="completed" ${orderStatus === 'completed' ? 'selected' : ''}>${t('statusCompleted')}</option>
+                        </select>
+                        <button class="btn-small btn-info" onclick="viewOrderDetails(${index})">${t('viewBtn')}</button>
+                        <button class="btn-small btn-warning" onclick="sendWhatsAppMessage(${index})">${t('messageBtn')}</button>
+                        ${paymentStatus === 'approved' && orderStatus === 'completed' ? `<button class="btn-small btn-primary" onclick="generateReceipt(${index})">${t('receiptBtn')}</button>` : ''}
+                    </td>
+                </tr>
+            `;
+        }).join('');
+        updateDashboardStats();
+    }
+    
+    function approvePayment(index) {
+        if (orders[index]) {
+            orders[index].paymentStatus = 'approved';
+            saveOrders();
+            displayOrders();
+            displayPayments();
+            updateDashboardStats();
+            showToast(`${t('paymentApprovedMsg')}${index + 1}`);
+        }
+    }
+    
+    function updateOrderStatus(index, newStatus) {
+        if (orders[index]) {
+            orders[index].orderStatus = newStatus;
+            saveOrders();
+            displayOrders();
+            displayPayments();
+            updateDashboardStats();
+            showToast(`${t('statusUpdatedMsg')}${index + 1}${t('statusChangedMsg')}${newStatus}`);
+        }
+    }
+    
+    function viewOrderDetails(index) {
+        const order = orders[index];
+        if (!order) return;
+        const itemsHtml = order.items?.map(item => `• ${item.name} x ${item.quantity} = TZS ${(item.price * item.quantity).toLocaleString()}`).join('\n') || 'No items';
+        alert(`📋 ORDER DETAILS\n━━━━━━━━━━━━━━━━━━━━━\nOrder ID: #${index + 1}\nCustomer: ${order.name}\nPhone: ${order.phone}\nAddress: ${order.address || 'Not provided'}\nDate: ${new Date(order.date).toLocaleString()}\n━━━━━━━━━━━━━━━━━━━━━\nITEMS:\n${itemsHtml}\n━━━━━━━━━━━━━━━━━━━━━\nTotal: TZS ${(order.total || 0).toLocaleString()}`);
+    }
+    
+    function sendWhatsAppMessage(index) {
+        const order = orders[index];
+        if (!order) return;
+        let message = `🛍️ *TAYMOUR HIJAAB - Order Update*%0A%0A`;
+        message += `Dear ${order.name},%0A%0A`;
+        message += `Your order #${index + 1} has been updated.%0A`;
+        message += `Payment Status: *${order.paymentStatus === 'approved' ? 'APPROVED ✅' : 'Pending ⏳'}*%0A`;
+        message += `Order Status: *${(order.orderStatus || 'pending').toUpperCase()}*%0A%0A`;
+        message += `Thank you for shopping with TAYMOUR HIJAAB!`;
+        window.open(`https://wa.me/${order.phone}?text=${message}`, '_blank');
+    }
+    
+    // ========================================
+    // PAYMENTS
+    // ========================================
+    function displayPayments() {
+        const tbody = document.getElementById('paymentsTableBody');
+        const pendingAmount = orders.filter(o => o.paymentStatus !== 'approved').reduce((sum, o) => sum + (o.total || 0), 0);
+        const approvedAmount = orders.filter(o => o.paymentStatus === 'approved').reduce((sum, o) => sum + (o.total || 0), 0);
+        
+        document.getElementById('payTotalOrders').innerText = orders.length;
+        document.getElementById('payPendingAmount').innerHTML = `TZS ${pendingAmount.toLocaleString()}`;
+        document.getElementById('payApprovedAmount').innerHTML = `TZS ${approvedAmount.toLocaleString()}`;
+        
+        if (!orders.length) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">${t('noPayments')}</td></tr>`;
+            return;
+        }
+        
+        tbody.innerHTML = orders.map((order, index) => `
+            <tr>
+                <td>#${index + 1}</td>
+                <td>${escapeHtml(order.name)}</td>
+                <td>TZS ${(order.total || 0).toLocaleString()}</td>
+                <td><span class="status ${order.paymentStatus === 'approved' ? 'status-approved' : 'status-pending'}">${order.paymentStatus === 'approved' ? t('paymentApproved') : t('paymentPending')}</span></td>
+                <td>${new Date(order.date).toLocaleDateString()}</td>
+                <td>${order.paymentStatus !== 'approved' ? `<button class="btn-small btn-success" onclick="approvePayment(${index})">${t('approveBtn')}</button>` : ''}</td>
+            </tr>
+        `).join('');
+    }
+    
+    // ========================================
+    // RECEIPTS
+    // ========================================
+    function generateReceipt(index) {
+        const order = orders[index];
+        if (!order) return;
+        currentReceiptIndex = index;
+        const receiptId = `RCP-${new Date().getFullYear()}${(index + 1).toString().padStart(4, '0')}`;
+        const receiptHTML = `
+            <div class="receipt">
+                <h3>🧕 TAYMOUR HIJAAB</h3>
+                <p style="text-align:center;">Premium Quality Hijaabs<br>Dar es Salaam, Tanzania</p>
+                <div class="receipt-line"></div>
+                <p><strong>RECEIPT</strong><br>
+                Receipt #: ${receiptId}<br>
+                Date: ${new Date().toLocaleString()}<br>
+                Order ID: #${index + 1}</p>
+                <div class="receipt-line"></div>
+                <p><strong>Customer:</strong> ${escapeHtml(order.name)}<br>
+                <strong>Phone:</strong> ${escapeHtml(order.phone)}<br>
+                <strong>Address:</strong> ${escapeHtml(order.address || 'Not provided')}</p>
+                <div class="receipt-line"></div>
+                <p><strong>Items Purchased:</strong></p>
+                ${order.items?.map(item => `<p>${escapeHtml(item.name)} x ${item.quantity} = TZS ${(item.price * item.quantity).toLocaleString()}</p>`).join('')}
+                <div class="receipt-line"></div>
+                <p><strong>Total:</strong> TZS ${(order.total || 0).toLocaleString()}<br>
+                <strong>Payment Status:</strong> APPROVED ✅</p>
+                <div class="receipt-line"></div>
+                <p style="text-align:center;">Thank you for shopping with us!<br>For inquiries: +255 712 345 678</p>
+            </div>
+        `;
+        document.getElementById('receiptContent').innerHTML = receiptHTML;
+        document.getElementById('receiptModal').style.display = 'flex';
+        
+        const receipts = JSON.parse(localStorage.getItem('taymour_receipts') || '[]');
+        if (!receipts.find(r => r.orderId === index + 1)) {
+            receipts.push({ receiptId, orderId: index + 1, customer: order.name, amount: order.total, date: new Date().toISOString() });
+            localStorage.setItem('taymour_receipts', JSON.stringify(receipts));
+        }
+        displayReceipts();
+    }
+    
+    function displayReceipts() {
+        const tbody = document.getElementById('receiptsTableBody');
+        const receipts = JSON.parse(localStorage.getItem('taymour_receipts') || '[]');
+        if (!receipts.length) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">${t('noReceipts')}</td></tr>`;
+            return;
+        }
+        tbody.innerHTML = receipts.map((receipt, idx) => `
+            <tr>
+                <td>${receipt.receiptId}</td>
+                <td>#${receipt.orderId}</td>
+                <td>${escapeHtml(receipt.customer)}</td>
+                <td>${new Date(receipt.date).toLocaleDateString()}</td>
+                <td>TZS ${receipt.amount.toLocaleString()}</td>
+                <td><button class="btn-small btn-primary" onclick="viewReceipt(${idx})">${t('viewReceiptBtn')}</button></td>
+            </tr>
+        `).join('');
+    }
+    
+    function viewReceipt(index) {
+        const receipts = JSON.parse(localStorage.getItem('taymour_receipts') || '[]');
+        const receipt = receipts[index];
+        if (!receipt) return;
+        const receiptHTML = `
+            <div class="receipt">
+                <h3>🧕 TAYMOUR HIJAAB</h3>
+                <p style="text-align:center;">Premium Quality Hijaabs<br>Dar es Salaam, Tanzania</p>
+                <div class="receipt-line"></div>
+                <p><strong>RECEIPT</strong><br>
+                Receipt #: ${receipt.receiptId}<br>
+                Date: ${new Date(receipt.date).toLocaleString()}<br>
+                Order ID: #${receipt.orderId}</p>
+                <div class="receipt-line"></div>
+                <p><strong>Customer:</strong> ${escapeHtml(receipt.customer)}</p>
+                <div class="receipt-line"></div>
+                <p><strong>Amount Paid:</strong> TZS ${receipt.amount.toLocaleString()}</p>
+                <div class="receipt-line"></div>
+                <p style="text-align:center;">Thank you for shopping with us!</p>
+            </div>
+        `;
+        document.getElementById('receiptContent').innerHTML = receiptHTML;
+        document.getElementById('receiptModal').style.display = 'flex';
+    }
+    
+    function closeReceiptModal() {
+        document.getElementById('receiptModal').style.display = 'none';
+    }
+    
+    function printReceipt() {
+        const content = document.getElementById('receiptContent').innerHTML;
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`<html><head><title>TAYMOUR HIJAAB - Receipt</title></head><body style="font-family: monospace; padding: 20px;">${content}</body></html>`);
+        printWindow.print();
+    }
+    
+    // ========================================
+    // DASHBOARD STATS
+    // ========================================
+    function updateDashboardStats() {
+        const totalOrders = orders.length;
+        const pendingOrders = orders.filter(o => o.paymentStatus !== 'approved').length;
+        const approvedOrders = orders.filter(o => o.paymentStatus === 'approved').length;
+        const totalRevenue = orders.filter(o => o.paymentStatus === 'approved').reduce((sum, o) => sum + (o.total || 0), 0);
+        
+        document.getElementById('statTotalOrders').innerText = totalOrders;
+        document.getElementById('statPendingOrders').innerText = pendingOrders;
+        document.getElementById('statApprovedOrders').innerText = approvedOrders;
+        document.getElementById('statTotalRevenue').innerHTML = `TZS ${totalRevenue.toLocaleString()}`;
+        document.getElementById('statProductsCount').innerText = products.length;
+    }
+    
+    // ========================================
+    // HELPER FUNCTIONS
+    // ========================================
     function escapeHtml(text) {
         if (!text) return '';
         return text.replace(/[&<>]/g, function(m) {
@@ -292,12 +1464,50 @@
         });
     }
     
-    // Prevent right-click on admin panel (basic security)
-    document.addEventListener('contextmenu', function(e) {
-        if (document.getElementById('adminPanel').style.display === 'block') {
-            e.preventDefault();
-            return false;
-        }
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerText = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+    
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('collapsed');
+    }
+    
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+        document.getElementById(`${tabName}Tab`).classList.add('active');
+        event.target.closest('.nav-link').classList.add('active');
+    }
+    
+    // ========================================
+    // LOAD ALL DATA
+    // ========================================
+    function loadAllData() {
+        loadProducts();
+        loadOrders();
+        displayOrders();
+        displayPayments();
+        displayReceipts();
+        updateDashboardStats();
+    }
+    
+    // ========================================
+    // INITIALIZATION
+    // ========================================
+    if (!hasSelectedLanguage) {
+        document.getElementById('langSelectPage').style.display = 'flex';
+    } else {
+        document.getElementById('langSelectPage').style.display = 'none';
+        document.getElementById('loginPage').style.display = 'flex';
+        if (currentLanguage) updateAllText();
+    }
+    
+    document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') checkLogin();
     });
 </script>
 
