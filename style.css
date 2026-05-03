@@ -621,3 +621,34 @@ body {
         font-size: 1.5rem;
     }
 }
+/* Logo with Image */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-image {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.logo h1 {
+    font-size: 1.5rem;
+    color: #8B4513;
+    margin: 0;
+}
+
+/* Responsive for mobile */
+@media (max-width: 768px) {
+    .logo-image {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .logo h1 {
+        font-size: 1.2rem;
+    }
+}
