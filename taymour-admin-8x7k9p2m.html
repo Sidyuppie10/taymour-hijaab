@@ -18,14 +18,16 @@
         }
         
         /* Login Page */
-        .login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #5C3317 0%, #8B4513 100%);
-        }
-        
+              .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url('images/favicon.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
         .login-box {
             background: white;
             padding: 40px;
@@ -67,7 +69,7 @@
             font-size: 14px;
         }
         
-        /* Language Selection Page */
+        /* Language Selection Page (FIRST TIME ONLY) */
         .lang-select-container {
             display: flex;
             justify-content: center;
@@ -108,7 +110,8 @@
             padding: 20px;
             cursor: pointer;
             transition: all 0.3s;
-            width: 120px;
+            width: 140px;
+            text-align: center;
         }
         
         .lang-option:hover {
@@ -116,19 +119,16 @@
             transform: translateY(-3px);
         }
         
-        .lang-option.selected {
-            border-color: #e94560;
-            background: #ffe8e0;
-        }
-        
-        .lang-option .flag {
-            font-size: 40px;
-            margin-bottom: 10px;
-        }
-        
         .lang-option .lang-name {
             font-weight: bold;
             color: #5C3317;
+            font-size: 20px;
+        }
+        
+        .lang-option .lang-full {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
         }
         
         /* Main App with Sidebar */
@@ -449,6 +449,89 @@
             animation: fadeInOut 3s ease;
         }
         
+        /* Settings Pages */
+        .settings-page {
+            padding: 20px;
+        }
+        
+        .settings-page h3 {
+            color: #5C3317;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .lang-buttons-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        
+        .lang-card {
+            background: #f9f5e8;
+            border: 2px solid #e0d5c0;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 160px;
+        }
+        
+        .lang-card:hover {
+            border-color: #e94560;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .lang-card .lang-code {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e94560;
+            margin-bottom: 5px;
+        }
+        
+        .lang-card .lang-full {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .current-lang-indicator {
+            text-align: center;
+            padding: 15px;
+            background: #e8f4f8;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .password-form {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #f9f5e8;
+            padding: 30px;
+            border-radius: 15px;
+        }
+        
+        .password-form .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .password-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #5C3317;
+        }
+        
+        .password-form input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
         /* Image Upload Styles */
         .image-upload-area {
             border: 2px dashed #e0d5c0;
@@ -478,12 +561,6 @@
             max-height: 80px;
             border-radius: 8px;
             border: 1px solid #ddd;
-        }
-        
-        .image-filename {
-            font-size: 12px;
-            color: #666;
-            word-break: break-all;
         }
         
         .remove-image {
@@ -520,24 +597,31 @@
                 padding: 8px;
                 font-size: 12px;
             }
+            .lang-card {
+                width: 130px;
+                padding: 20px;
+            }
+            .lang-card .lang-code {
+                font-size: 18px;
+            }
         }
     </style>
 </head>
 <body>
 
-<!-- Language Selection Page (First time only) -->
+<!-- Language Selection Page (FIRST TIME ONLY) -->
 <div id="langSelectPage" class="lang-select-container">
     <div class="lang-select-box">
         <h2 id="langSelectTitle">🌍 Select Your Language</h2>
         <p id="langSelectDesc">Choose your preferred language for the admin panel</p>
         <div class="lang-options">
             <div class="lang-option" onclick="selectLanguage('en')">
-                <div class="flag">🇬🇧</div>
-                <div class="lang-name">English</div>
+                <div class="lang-name">ENGLISH</div>
+                <div class="lang-full">English</div>
             </div>
             <div class="lang-option" onclick="selectLanguage('sw')">
-                <div class="flag">🇹🇿</div>
-                <div class="lang-name">Kiswahili</div>
+                <div class="lang-name">KISWAHILI</div>
+                <div class="lang-full">Swahili</div>
             </div>
         </div>
     </div>
@@ -595,9 +679,15 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <div class="nav-link" onclick="switchTab('settings')">
-                        <span class="nav-icon">⚙️</span>
-                        <span class="nav-text" id="navSettings">Settings</span>
+                    <div class="nav-link" onclick="switchTab('langsettings')">
+                        <span class="nav-icon">🌐</span>
+                        <span class="nav-text" id="navLangSettings">Language Settings</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="switchTab('passwordsettings')">
+                        <span class="nav-icon">🔐</span>
+                        <span class="nav-text" id="navPasswordSettings">Password Settings</span>
                     </div>
                 </li>
             </ul>
@@ -606,14 +696,14 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="header">
-                <h1 id="mainTitle">📦 TAYMOUR HIJAAB - Admin Panel</h1>
-                <div class="lang-buttons">
-                    <button class="btn-small" onclick="changeLanguageFromSettings('en')">🇬🇧 EN</button>
-                    <button class="btn-small" onclick="changeLanguageFromSettings('sw')">🇹🇿 SW</button>
-                    <button id="logoutHeaderBtn" onclick="logout()" class="btn-small" style="background:#6c757d;">🚪</button>
-                </div>
-            </div>
-            
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <img src="images/favicon.png" alt="Logo" style="height: 40px; width: 40px; object-fit: contain; border-radius: 8px;">
+        <h1 id="mainTitle" style="margin: 0;">📦 TAYMOUR HIJAAB - Admin Panel</h1>
+    </div>
+    <div>
+        <button id="logoutHeaderBtn" onclick="logout()" class="btn-small" style="background:#6c757d;">🚪 Logout</button>
+    </div>
+</div>            
             <!-- Dashboard Tab -->
             <div id="dashboardTab" class="tab-content active">
                 <div class="stats-grid">
@@ -640,7 +730,7 @@
                 </div>
             </div>
             
-            <!-- Products Tab with Image Upload -->
+            <!-- Products Tab -->
             <div id="productsTab" class="tab-content">
                 <div class="product-form">
                     <h3 id="addProductTitle">➕ Add New Product</h3>
@@ -750,42 +840,46 @@
                 </div>
             </div>
             
-            <!-- Settings Tab -->
-            <div id="settingsTab" class="tab-content">
-                <h3 id="settingsTitle">⚙️ Settings</h3>
-                <div class="form-section">
-                    <h4 id="languageSettingsTitle">🌐 Language Settings</h4>
-                    <div class="form-group">
-                        <label id="selectLanguageLabel">Select Language</label>
-                        <div class="lang-options" style="justify-content: flex-start; gap: 15px;">
-                            <div class="lang-option" onclick="changeLanguageFromSettings('en')" style="width: 100px; padding: 10px;">
-                                <div class="flag">🇬🇧</div>
-                                <div class="lang-name">English</div>
-                            </div>
-                            <div class="lang-option" onclick="changeLanguageFromSettings('sw')" style="width: 100px; padding: 10px;">
-                                <div class="flag">🇹🇿</div>
-                                <div class="lang-name">Kiswahili</div>
-                            </div>
+            <!-- Language Settings Tab -->
+            <div id="langsettingsTab" class="tab-content">
+                <div class="settings-page">
+                    <h3 id="langSettingsTitle">🌐 Language Settings</h3>
+                    <div class="current-lang-indicator" id="currentLangDisplay">
+                        Current Language: <strong id="currentLangText">English</strong>
+                    </div>
+                    <div class="lang-buttons-container">
+                        <div class="lang-card" onclick="changeLanguageFromSettings('en')">
+                            <div class="lang-code">ENGLISH</div>
+                            <div class="lang-full">English</div>
+                        </div>
+                        <div class="lang-card" onclick="changeLanguageFromSettings('sw')">
+                            <div class="lang-code">KISWAHILI</div>
+                            <div class="lang-full">Swahili</div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="form-section" style="margin-top: 20px;">
-                    <h4 id="passwordSettingsTitle">🔐 Password Settings</h4>
-                    <div class="form-group">
-                        <label id="currentPasswordLabel">Current Password</label>
-                        <input type="password" id="currentPassword" placeholder="Enter current password">
+            </div>
+            
+            <!-- Password Settings Tab -->
+            <div id="passwordsettingsTab" class="tab-content">
+                <div class="settings-page">
+                    <h3 id="passwordSettingsTitle">🔐 Password Settings</h3>
+                    <div class="password-form">
+                        <div class="form-group">
+                            <label id="currentPasswordLabel">Current Password</label>
+                            <input type="password" id="currentPassword" placeholder="Enter current password">
+                        </div>
+                        <div class="form-group">
+                            <label id="newPasswordLabel">New Password</label>
+                            <input type="password" id="newPassword" placeholder="Enter new password (min 6 characters)">
+                        </div>
+                        <div class="form-group">
+                            <label id="confirmPasswordLabel">Confirm New Password</label>
+                            <input type="password" id="confirmPassword" placeholder="Confirm new password">
+                        </div>
+                        <button onclick="changePassword()" class="btn-primary" id="changePasswordBtn">Change Password</button>
+                        <div id="passwordMsg" class="success-msg"></div>
                     </div>
-                    <div class="form-group">
-                        <label id="newPasswordLabel">New Password</label>
-                        <input type="password" id="newPassword" placeholder="Enter new password">
-                    </div>
-                    <div class="form-group">
-                        <label id="confirmPasswordLabel">Confirm New Password</label>
-                        <input type="password" id="confirmPassword" placeholder="Confirm new password">
-                    </div>
-                    <button onclick="changePassword()" class="btn-primary" id="changePasswordBtn">Change Password</button>
-                    <div id="passwordMsg" class="success-msg"></div>
                 </div>
             </div>
         </div>
@@ -839,13 +933,11 @@
         const file = event.target.files[0];
         if (!file) return;
         
-        // Check file type
         if (!file.type.startsWith('image/')) {
             alert('Please select an image file (JPG, PNG, GIF)');
             return;
         }
         
-        // Check file size (max 5MB)
         if (file.size > 5 * 1024 * 1024) {
             alert('Image size should be less than 5MB');
             return;
@@ -853,7 +945,6 @@
         
         selectedImageFile = file;
         
-        // Preview the image
         const reader = new FileReader();
         reader.onload = function(e) {
             document.getElementById('imagePreview').src = e.target.result;
@@ -862,7 +953,6 @@
         };
         reader.readAsDataURL(file);
         
-        // Store the filename in hidden input
         document.getElementById('prodImage').value = file.name;
     }
     
@@ -891,7 +981,8 @@
             navOrders: "Orders & Approval",
             navPayments: "Payment Statement",
             navReceipts: "Receipts",
-            navSettings: "Settings",
+            navLangSettings: "Language Settings",
+            navPasswordSettings: "Password Settings",
             mainTitle: "📦 TAYMOUR HIJAAB - Admin Panel",
             statTotalOrdersLabel: "Total Orders",
             statPendingLabel: "Pending Approval",
@@ -954,9 +1045,7 @@
             viewReceiptBtn: "View",
             closeBtn: "Close",
             printBtn: "🖨️ Print",
-            settingsTitle: "⚙️ Settings",
-            languageSettingsTitle: "🌐 Language Settings",
-            selectLanguageLabel: "Select Language",
+            langSettingsTitle: "🌐 Language Settings",
             passwordSettingsTitle: "🔐 Password Settings",
             currentPasswordLabel: "Current Password",
             newPasswordLabel: "New Password",
@@ -966,7 +1055,12 @@
             statusUpdatedMsg: "✅ Order #",
             statusChangedMsg: " status updated to ",
             receiptSent: "✅ Receipt sent to customer via WhatsApp!",
-            sendingReceipt: "📱 Opening WhatsApp..."
+            sendingReceipt: "📱 Opening WhatsApp...",
+            languageChanged: "✅ Language changed successfully!",
+            passwordChanged: "✅ Password changed successfully!",
+            passwordMismatch: "❌ New passwords do not match",
+            passwordTooShort: "❌ Password must be at least 6 characters",
+            passwordIncorrect: "❌ Current password is incorrect"
         },
         sw: {
             langSelectTitle: "🌍 Chagua Lugha Yako",
@@ -980,7 +1074,8 @@
             navOrders: "Maagizo na Kuidhinishwa",
             navPayments: "Taarifa za Malipo",
             navReceipts: "Stakabadhi",
-            navSettings: "Mipangilio",
+            navLangSettings: "Mipangilio ya Lugha",
+            navPasswordSettings: "Mipangilio ya Nenosiri",
             mainTitle: "📦 TAYMOUR HIJAAB - Paneli ya Msimamizi",
             statTotalOrdersLabel: "Jumla ya Maagizo",
             statPendingLabel: "Yanayosubiri Kuidhinishwa",
@@ -1043,9 +1138,7 @@
             viewReceiptBtn: "Tazama",
             closeBtn: "Funga",
             printBtn: "🖨️ Chapisha",
-            settingsTitle: "⚙️ Mipangilio",
-            languageSettingsTitle: "🌐 Mipangilio ya Lugha",
-            selectLanguageLabel: "Chagua Lugha",
+            langSettingsTitle: "🌐 Mipangilio ya Lugha",
             passwordSettingsTitle: "🔐 Mipangilio ya Nenosiri",
             currentPasswordLabel: "Nenosiri la Sasa",
             newPasswordLabel: "Nenosiri Mpya",
@@ -1055,7 +1148,12 @@
             statusUpdatedMsg: "✅ Agizo #",
             statusChangedMsg: " hali imebadilishwa kuwa ",
             receiptSent: "✅ Stakabadhi imetumwa kwa mteja kwa WhatsApp!",
-            sendingReceipt: "📱 Inafungua WhatsApp..."
+            sendingReceipt: "📱 Inafungua WhatsApp...",
+            languageChanged: "✅ Lugha imebadilishwa kikamilifu!",
+            passwordChanged: "✅ Nenosiri limebadilishwa kikamilifu!",
+            passwordMismatch: "❌ Manenosiri mapya hayafanani",
+            passwordTooShort: "❌ Nenosiri lazima iwe na herufi 6 au zaidi",
+            passwordIncorrect: "❌ Nenosiri la sasa si sahihi"
         }
     };
     
@@ -1064,7 +1162,7 @@
     }
     
     function updateAllText() {
-        const elements = ['loginTitle', 'loginBtn', 'menuTitle', 'navDashboard', 'navProducts', 'navOrders', 'navPayments', 'navReceipts', 'navSettings', 'mainTitle', 'statTotalOrdersLabel', 'statPendingLabel', 'statApprovedLabel', 'statRevenueLabel', 'statProductsLabel', 'addProductTitle', 'prodNameLabel', 'prodPriceLabel', 'prodImageLabel', 'prodDescLabel', 'addProductBtn', 'currentProductsTitle', 'thOrderId', 'thDate', 'thCustomer', 'thPhone', 'thItems', 'thTotal', 'thPayment', 'thStatus', 'thActions', 'payTotalOrdersLabel', 'payPendingLabel', 'payApprovedLabel', 'payThOrderId', 'payThCustomer', 'payThAmount', 'payThStatus', 'payThDate', 'payThAction', 'recThReceipt', 'recThOrderId', 'recThCustomer', 'recThDate', 'recThAmount', 'recThAction', 'settingsTitle', 'languageSettingsTitle', 'selectLanguageLabel', 'passwordSettingsTitle', 'currentPasswordLabel', 'newPasswordLabel', 'confirmPasswordLabel', 'changePasswordBtn', 'closeReceiptBtn', 'printReceiptBtn'];
+        const elements = ['loginTitle', 'loginBtn', 'menuTitle', 'navDashboard', 'navProducts', 'navOrders', 'navPayments', 'navReceipts', 'navLangSettings', 'navPasswordSettings', 'mainTitle', 'statTotalOrdersLabel', 'statPendingLabel', 'statApprovedLabel', 'statRevenueLabel', 'statProductsLabel', 'addProductTitle', 'prodNameLabel', 'prodPriceLabel', 'prodImageLabel', 'prodDescLabel', 'addProductBtn', 'currentProductsTitle', 'thOrderId', 'thDate', 'thCustomer', 'thPhone', 'thItems', 'thTotal', 'thPayment', 'thStatus', 'thActions', 'payTotalOrdersLabel', 'payPendingLabel', 'payApprovedLabel', 'payThOrderId', 'payThCustomer', 'payThAmount', 'payThStatus', 'payThDate', 'payThAction', 'recThReceipt', 'recThOrderId', 'recThCustomer', 'recThDate', 'recThAmount', 'recThAction', 'langSettingsTitle', 'passwordSettingsTitle', 'currentPasswordLabel', 'newPasswordLabel', 'confirmPasswordLabel', 'changePasswordBtn', 'closeReceiptBtn', 'printReceiptBtn'];
         
         elements.forEach(id => {
             const el = document.getElementById(id);
@@ -1076,7 +1174,18 @@
         if (langSelectTitle) langSelectTitle.innerText = t('langSelectTitle');
         if (langSelectDesc) langSelectDesc.innerText = t('langSelectDesc');
         
-        // Update image upload area text
+        const currentLangText = document.getElementById('currentLangText');
+        if (currentLangText) {
+            currentLangText.innerText = currentLanguage === 'en' ? 'English' : 'Kiswahili';
+        }
+        
+        const currentLangDisplay = document.getElementById('currentLangDisplay');
+        if (currentLangDisplay && currentLanguage === 'en') {
+            currentLangDisplay.innerHTML = `Current Language: <strong>English</strong>`;
+        } else if (currentLangDisplay) {
+            currentLangDisplay.innerHTML = `Lugha ya Sasa: <strong>Kiswahili</strong>`;
+        }
+        
         const imageUploadArea = document.querySelector('.image-upload-area');
         if (imageUploadArea && currentLanguage === 'sw') {
             imageUploadArea.innerHTML = '📸 Bonyeza kuchagua picha kutoka kwenye simu/kompyuta yako';
@@ -1086,7 +1195,7 @@
     }
     
     // ========================================
-    // LANGUAGE SELECTION
+    // LANGUAGE SELECTION (First time only)
     // ========================================
     function selectLanguage(lang) {
         currentLanguage = lang;
@@ -1104,7 +1213,7 @@
         localStorage.setItem('taymour_language', lang);
         updateAllText();
         loadAllData();
-        showToast(t('productUpdated'));
+        showToast(t('languageChanged'));
     }
     
     // ========================================
@@ -1154,23 +1263,23 @@
         const confirm = document.getElementById('confirmPassword').value;
         
         if (current !== MASTER_PASSWORD) {
-            document.getElementById('passwordMsg').innerHTML = '<span style="color:red;">Current password is incorrect</span>';
+            document.getElementById('passwordMsg').innerHTML = `<span style="color:red;">${t('passwordIncorrect')}</span>`;
             return;
         }
         
         if (newPass !== confirm) {
-            document.getElementById('passwordMsg').innerHTML = '<span style="color:red;">New passwords do not match</span>';
+            document.getElementById('passwordMsg').innerHTML = `<span style="color:red;">${t('passwordMismatch')}</span>`;
             return;
         }
         
         if (newPass.length < 6) {
-            document.getElementById('passwordMsg').innerHTML = '<span style="color:red;">Password must be at least 6 characters</span>';
+            document.getElementById('passwordMsg').innerHTML = `<span style="color:red;">${t('passwordTooShort')}</span>`;
             return;
         }
         
         MASTER_PASSWORD = newPass;
         localStorage.setItem('taymour_admin_password', newPass);
-        document.getElementById('passwordMsg').innerHTML = '<span style="color:green;">✅ Password changed successfully!</span>';
+        document.getElementById('passwordMsg').innerHTML = `<span style="color:green;">${t('passwordChanged')}</span>`;
         document.getElementById('currentPassword').value = '';
         document.getElementById('newPassword').value = '';
         document.getElementById('confirmPassword').value = '';
@@ -1181,7 +1290,7 @@
     }
     
     // ========================================
-    // PRODUCT MANAGEMENT WITH IMAGE UPLOAD
+    // PRODUCT MANAGEMENT
     // ========================================
     function loadProducts() {
         const saved = localStorage.getItem('taymour_products');
@@ -1245,7 +1354,6 @@
         saveProducts();
         displayProducts();
         
-        // Clear form
         document.getElementById('prodName').value = '';
         document.getElementById('prodPrice').value = '';
         document.getElementById('prodDesc').value = '';
@@ -1301,7 +1409,7 @@
     function displayOrders() {
         const tbody = document.getElementById('ordersTableBody');
         if (!orders.length) {
-            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">${t('noOrders')}</td></tr>`;
+            tbody.innerHTML = `<table><td colspan="9" style="text-align:center;">${t('noOrders')}</td><tr>`;
             return;
         }
         
@@ -1312,12 +1420,12 @@
                 <tr>
                     <td>#${index + 1}</td>
                     <td>${new Date(order.date).toLocaleDateString()}</td>
-                    <td>${escapeHtml(order.name)}</td>
-                    <td>${escapeHtml(order.phone)}</td>
-                    <td>${order.items?.length || 0} item(s)</td>
-                    <td>TZS ${(order.total || 0).toLocaleString()}</td>
-                    <td><span class="status ${paymentStatus === 'approved' ? 'status-approved' : 'status-pending'}">${paymentStatus === 'approved' ? t('paymentApproved') : t('paymentPending')}</span></td>
-                    <td><span class="status ${orderStatus === 'completed' ? 'status-approved' : (orderStatus === 'processing' ? 'status-processing' : 'status-pending')}">${orderStatus === 'completed' ? t('orderCompleted') : (orderStatus === 'processing' ? t('orderProcessing') : t('orderPending'))}</span></td>
+                    <td>${escapeHtml(order.name)}</td
+                    <td>${escapeHtml(order.phone)}</td
+                    <td>${order.items?.length || 0} item(s)</td
+                    <td>TZS ${(order.total || 0).toLocaleString()}</td
+                    <td><span class="status ${paymentStatus === 'approved' ? 'status-approved' : 'status-pending'}">${paymentStatus === 'approved' ? t('paymentApproved') : t('paymentPending')}</span></td
+                    <td><span class="status ${orderStatus === 'completed' ? 'status-approved' : (orderStatus === 'processing' ? 'status-processing' : 'status-pending')}">${orderStatus === 'completed' ? t('orderCompleted') : (orderStatus === 'processing' ? t('orderProcessing') : t('orderPending'))}</span></td
                     <td class="action-btns">
                         ${paymentStatus !== 'approved' ? `<button class="btn-small btn-success" onclick="approvePayment(${index})">${t('approveBtn')}</button>` : ''}
                         <select class="status-select" onchange="updateOrderStatus(${index}, this.value)">
@@ -1329,7 +1437,7 @@
                         <button class="btn-small btn-warning" onclick="sendWhatsAppMessage(${index})">${t('messageBtn')}</button>
                         ${paymentStatus === 'approved' && orderStatus === 'completed' ? `<button class="btn-small btn-primary" onclick="generateReceipt(${index})">${t('receiptBtn')}</button>` : ''}
                     </td>
-                </tr>
+                </table>
             `;
         }).join('');
         updateDashboardStats();
@@ -1395,12 +1503,12 @@
         
         tbody.innerHTML = orders.map((order, index) => `
             <tr>
-                <td>#${index + 1}</td>
-                <td>${escapeHtml(order.name)}</td>
-                <td>TZS ${(order.total || 0).toLocaleString()}</td>
-                <td><span class="status ${order.paymentStatus === 'approved' ? 'status-approved' : 'status-pending'}">${order.paymentStatus === 'approved' ? t('paymentApproved') : t('paymentPending')}</span></td>
-                <td>${new Date(order.date).toLocaleDateString()}</td>
-                <td>${order.paymentStatus !== 'approved' ? `<button class="btn-small btn-success" onclick="approvePayment(${index})">${t('approveBtn')}</button>` : ''}</td>
+                <td>#${index + 1}</td
+                <td>${escapeHtml(order.name)}</td
+                <td>TZS ${(order.total || 0).toLocaleString()}</td
+                <td><span class="status ${order.paymentStatus === 'approved' ? 'status-approved' : 'status-pending'}">${order.paymentStatus === 'approved' ? t('paymentApproved') : t('paymentPending')}</span></td
+                <td>${new Date(order.date).toLocaleDateString()}</td
+                <td>${order.paymentStatus !== 'approved' ? `<button class="btn-small btn-success" onclick="approvePayment(${index})">${t('approveBtn')}</button>` : ''}</td
             </tr>
         `).join('');
     }
@@ -1456,12 +1564,12 @@
         }
         tbody.innerHTML = receipts.map((receipt, idx) => `
             <tr>
-                <td>${receipt.receiptId}</td>
-                <td>#${receipt.orderId}</td>
-                <td>${escapeHtml(receipt.customer)}</td>
-                <td>${new Date(receipt.date).toLocaleDateString()}</td>
-                <td>TZS ${receipt.amount.toLocaleString()}</td>
-                <td><button class="btn-small btn-primary" onclick="viewReceipt(${idx})">${t('viewReceiptBtn')}</button></td>
+                <td>${receipt.receiptId}</td
+                <td>#${receipt.orderId}</td
+                <td>${escapeHtml(receipt.customer)}</td
+                <td>${new Date(receipt.date).toLocaleDateString()}</td
+                <td>TZS ${receipt.amount.toLocaleString()}</td
+                <td><button class="btn-small btn-primary" onclick="viewReceipt(${idx})">${t('viewReceiptBtn')}</button></td
             </tr>
         `).join('');
     }
