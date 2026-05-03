@@ -449,6 +449,53 @@
             animation: fadeInOut 3s ease;
         }
         
+        /* Image Upload Styles */
+        .image-upload-area {
+            border: 2px dashed #e0d5c0;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .image-upload-area:hover {
+            border-color: #e94560;
+            background: #fff5e6;
+        }
+        
+        .image-preview {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .image-preview img {
+            max-width: 80px;
+            max-height: 80px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .image-filename {
+            font-size: 12px;
+            color: #666;
+            word-break: break-all;
+        }
+        
+        .remove-image {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 10px;
+        }
+        
         @keyframes fadeInOut {
             0% { opacity: 0; transform: translateY(20px); }
             15% { opacity: 1; transform: translateY(0); }
@@ -485,11 +532,11 @@
         <p id="langSelectDesc">Choose your preferred language for the admin panel</p>
         <div class="lang-options">
             <div class="lang-option" onclick="selectLanguage('en')">
-                <div class="flag">ENG</div>
+                <div class="flag">🇬🇧</div>
                 <div class="lang-name">English</div>
             </div>
             <div class="lang-option" onclick="selectLanguage('sw')">
-                <div class="flag">SW</div>
+                <div class="flag">🇹🇿</div>
                 <div class="lang-name">Kiswahili</div>
             </div>
         </div>
@@ -593,7 +640,7 @@
                 </div>
             </div>
             
-            <!-- Products Tab -->
+            <!-- Products Tab with Image Upload -->
             <div id="productsTab" class="tab-content">
                 <div class="product-form">
                     <h3 id="addProductTitle">➕ Add New Product</h3>
@@ -606,8 +653,17 @@
                         <input type="number" id="prodPrice" placeholder="e.g., 35000">
                     </div>
                     <div class="form-group">
-                        <label id="prodImageLabel">Image Filename</label>
-                        <input type="text" id="prodImage" placeholder="e.g., silk-hijab.jpg">
+                        <label id="prodImageLabel">Product Image</label>
+                        <div class="image-upload-area" onclick="document.getElementById('imageFileInput').click()">
+                            📸 Tap to select image from your phone/computer
+                        </div>
+                        <input type="file" id="imageFileInput" accept="image/*" style="display: none;" onchange="handleImageSelect(event)">
+                        <div id="imagePreviewArea" class="image-preview" style="display: none;">
+                            <img id="imagePreview" src="" alt="Preview">
+                            <span id="imageFilename" class="image-filename"></span>
+                            <button type="button" class="remove-image" onclick="clearSelectedImage()">✖ Remove</button>
+                        </div>
+                        <input type="hidden" id="prodImage" value="">
                     </div>
                     <div class="form-group">
                         <label id="prodDescLabel">Description</label>
@@ -703,11 +759,11 @@
                         <label id="selectLanguageLabel">Select Language</label>
                         <div class="lang-options" style="justify-content: flex-start; gap: 15px;">
                             <div class="lang-option" onclick="changeLanguageFromSettings('en')" style="width: 100px; padding: 10px;">
-                                <div class="flag">ENG</div>
+                                <div class="flag">🇬🇧</div>
                                 <div class="lang-name">English</div>
                             </div>
                             <div class="lang-option" onclick="changeLanguageFromSettings('sw')" style="width: 100px; padding: 10px;">
-                                <div class="flag">SW</div>
+                                <div class="flag">🇹🇿</div>
                                 <div class="lang-name">Kiswahili</div>
                             </div>
                         </div>
@@ -754,6 +810,7 @@
     let products = [];
     let orders = [];
     let currentReceiptIndex = null;
+    let selectedImageFile = null;
     
     // Default products
     const defaultProducts = [
@@ -776,20 +833,58 @@
     ];
     
     // ========================================
+    // IMAGE UPLOAD FUNCTIONS
+    // ========================================
+    function handleImageSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        // Check file type
+        if (!file.type.startsWith('image/')) {
+            alert('Please select an image file (JPG, PNG, GIF)');
+            return;
+        }
+        
+        // Check file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Image size should be less than 5MB');
+            return;
+        }
+        
+        selectedImageFile = file;
+        
+        // Preview the image
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('imagePreview').src = e.target.result;
+            document.getElementById('imagePreviewArea').style.display = 'flex';
+            document.getElementById('imageFilename').innerText = file.name;
+        };
+        reader.readAsDataURL(file);
+        
+        // Store the filename in hidden input
+        document.getElementById('prodImage').value = file.name;
+    }
+    
+    function clearSelectedImage() {
+        selectedImageFile = null;
+        document.getElementById('imagePreviewArea').style.display = 'none';
+        document.getElementById('imagePreview').src = '';
+        document.getElementById('imageFilename').innerText = '';
+        document.getElementById('prodImage').value = '';
+        document.getElementById('imageFileInput').value = '';
+    }
+    
+    // ========================================
     // TRANSLATIONS
     // ========================================
     const translations = {
         en: {
-            // Language selection
             langSelectTitle: "🌍 Select Your Language",
             langSelectDesc: "Choose your preferred language for the admin panel",
-            
-            // Login
             loginTitle: "Admin Login",
             loginBtn: "Login",
             loginError: "Incorrect password. Please try again.",
-            
-            // Sidebar
             menuTitle: "📦 MENU",
             navDashboard: "Dashboard",
             navProducts: "Manage Products",
@@ -798,19 +893,15 @@
             navReceipts: "Receipts",
             navSettings: "Settings",
             mainTitle: "📦 TAYMOUR HIJAAB - Admin Panel",
-            
-            // Dashboard
             statTotalOrdersLabel: "Total Orders",
             statPendingLabel: "Pending Approval",
             statApprovedLabel: "Approved Orders",
             statRevenueLabel: "Total Revenue",
             statProductsLabel: "Products",
-            
-            // Products
             addProductTitle: "➕ Add New Product",
             prodNameLabel: "Product Name",
             prodPriceLabel: "Price (TZS)",
-            prodImageLabel: "Image Filename",
+            prodImageLabel: "Product Image",
             prodDescLabel: "Description",
             addProductBtn: "➕ Add Product",
             currentProductsTitle: "📋 Current Products",
@@ -821,8 +912,6 @@
             productUpdated: "✅ Product updated!",
             productDeleted: "✅ Product deleted!",
             fillRequired: "Please fill in Name, Price, and Image",
-            
-            // Orders
             thOrderId: "ID",
             thDate: "Date",
             thCustomer: "Customer",
@@ -845,8 +934,6 @@
             statusProcessing: "Processing",
             statusCompleted: "Completed",
             noOrders: "No orders yet",
-            
-            // Payments
             payTotalOrdersLabel: "Total Orders",
             payPendingLabel: "Pending Payment",
             payApprovedLabel: "Approved Payment",
@@ -857,8 +944,6 @@
             payThDate: "Date",
             payThAction: "Action",
             noPayments: "No payments yet",
-            
-            // Receipts
             recThReceipt: "Receipt #",
             recThOrderId: "Order ID",
             recThCustomer: "Customer",
@@ -869,8 +954,6 @@
             viewReceiptBtn: "View",
             closeBtn: "Close",
             printBtn: "🖨️ Print",
-            
-            // Settings
             settingsTitle: "⚙️ Settings",
             languageSettingsTitle: "🌐 Language Settings",
             selectLanguageLabel: "Select Language",
@@ -879,8 +962,6 @@
             newPasswordLabel: "New Password",
             confirmPasswordLabel: "Confirm New Password",
             changePasswordBtn: "Change Password",
-            
-            // Messages
             paymentApprovedMsg: "✅ Payment for Order #",
             statusUpdatedMsg: "✅ Order #",
             statusChangedMsg: " status updated to ",
@@ -888,16 +969,11 @@
             sendingReceipt: "📱 Opening WhatsApp..."
         },
         sw: {
-            // Language selection
             langSelectTitle: "🌍 Chagua Lugha Yako",
             langSelectDesc: "Chagua lugha unayopenda kwa paneli ya msimamizi",
-            
-            // Login
             loginTitle: "Kuingia kwa Msimamizi",
             loginBtn: "Ingia",
             loginError: "Nenosiri si sahihi. Tafadhali jaribu tena.",
-            
-            // Sidebar
             menuTitle: "📦 MENU",
             navDashboard: "Dashibodi",
             navProducts: "Simamia Bidhaa",
@@ -906,19 +982,15 @@
             navReceipts: "Stakabadhi",
             navSettings: "Mipangilio",
             mainTitle: "📦 TAYMOUR HIJAAB - Paneli ya Msimamizi",
-            
-            // Dashboard
             statTotalOrdersLabel: "Jumla ya Maagizo",
             statPendingLabel: "Yanayosubiri Kuidhinishwa",
             statApprovedLabel: "Maagizo Yaliyoidhinishwa",
             statRevenueLabel: "Jumla ya Mapato",
             statProductsLabel: "Bidhaa",
-            
-            // Products
             addProductTitle: "➕ Ongeza Bidhaa Mpya",
             prodNameLabel: "Jina la Bidhaa",
             prodPriceLabel: "Bei (TZS)",
-            prodImageLabel: "Jina la Picha",
+            prodImageLabel: "Picha ya Bidhaa",
             prodDescLabel: "Maelezo",
             addProductBtn: "➕ Ongeza Bidhaa",
             currentProductsTitle: "📋 Bidhaa Zilizopo",
@@ -929,8 +1001,6 @@
             productUpdated: "✅ Bidhaa imebadilishwa!",
             productDeleted: "✅ Bidhaa imefutwa!",
             fillRequired: "Tafadhali jaza Jina, Bei, na Picha",
-            
-            // Orders
             thOrderId: "Kitambulisho",
             thDate: "Tarehe",
             thCustomer: "Mteja",
@@ -953,8 +1023,6 @@
             statusProcessing: "Inachakatwa",
             statusCompleted: "Imekamilika",
             noOrders: "Bado hakuna maagizo",
-            
-            // Payments
             payTotalOrdersLabel: "Jumla ya Maagizo",
             payPendingLabel: "Malipo Yanayosubiri",
             payApprovedLabel: "Malipo Yaliyokubaliwa",
@@ -965,8 +1033,6 @@
             payThDate: "Tarehe",
             payThAction: "Kitendo",
             noPayments: "Bado hakuna malipo",
-            
-            // Receipts
             recThReceipt: "Stakabadhi #",
             recThOrderId: "Kitambulisho",
             recThCustomer: "Mteja",
@@ -977,8 +1043,6 @@
             viewReceiptBtn: "Tazama",
             closeBtn: "Funga",
             printBtn: "🖨️ Chapisha",
-            
-            // Settings
             settingsTitle: "⚙️ Mipangilio",
             languageSettingsTitle: "🌐 Mipangilio ya Lugha",
             selectLanguageLabel: "Chagua Lugha",
@@ -987,8 +1051,6 @@
             newPasswordLabel: "Nenosiri Mpya",
             confirmPasswordLabel: "Thibitisha Nenosiri Mpya",
             changePasswordBtn: "Badilisha Nenosiri",
-            
-            // Messages
             paymentApprovedMsg: "✅ Malipo ya Agizo #",
             statusUpdatedMsg: "✅ Agizo #",
             statusChangedMsg: " hali imebadilishwa kuwa ",
@@ -1002,7 +1064,6 @@
     }
     
     function updateAllText() {
-        // Update all elements with data-i18n or by ID
         const elements = ['loginTitle', 'loginBtn', 'menuTitle', 'navDashboard', 'navProducts', 'navOrders', 'navPayments', 'navReceipts', 'navSettings', 'mainTitle', 'statTotalOrdersLabel', 'statPendingLabel', 'statApprovedLabel', 'statRevenueLabel', 'statProductsLabel', 'addProductTitle', 'prodNameLabel', 'prodPriceLabel', 'prodImageLabel', 'prodDescLabel', 'addProductBtn', 'currentProductsTitle', 'thOrderId', 'thDate', 'thCustomer', 'thPhone', 'thItems', 'thTotal', 'thPayment', 'thStatus', 'thActions', 'payTotalOrdersLabel', 'payPendingLabel', 'payApprovedLabel', 'payThOrderId', 'payThCustomer', 'payThAmount', 'payThStatus', 'payThDate', 'payThAction', 'recThReceipt', 'recThOrderId', 'recThCustomer', 'recThDate', 'recThAmount', 'recThAction', 'settingsTitle', 'languageSettingsTitle', 'selectLanguageLabel', 'passwordSettingsTitle', 'currentPasswordLabel', 'newPasswordLabel', 'confirmPasswordLabel', 'changePasswordBtn', 'closeReceiptBtn', 'printReceiptBtn'];
         
         elements.forEach(id => {
@@ -1010,11 +1071,18 @@
             if (el) el.innerText = t(id);
         });
         
-        // Update lang select page
         const langSelectTitle = document.getElementById('langSelectTitle');
         const langSelectDesc = document.getElementById('langSelectDesc');
         if (langSelectTitle) langSelectTitle.innerText = t('langSelectTitle');
         if (langSelectDesc) langSelectDesc.innerText = t('langSelectDesc');
+        
+        // Update image upload area text
+        const imageUploadArea = document.querySelector('.image-upload-area');
+        if (imageUploadArea && currentLanguage === 'sw') {
+            imageUploadArea.innerHTML = '📸 Bonyeza kuchagua picha kutoka kwenye simu/kompyuta yako';
+        } else if (imageUploadArea) {
+            imageUploadArea.innerHTML = '📸 Tap to select image from your phone/computer';
+        }
     }
     
     // ========================================
@@ -1025,9 +1093,7 @@
         localStorage.setItem('taymour_language', lang);
         localStorage.setItem('taymour_language_selected', 'true');
         
-        // Hide language selection page
         document.getElementById('langSelectPage').style.display = 'none';
-        // Show login page
         document.getElementById('loginPage').style.display = 'flex';
         
         updateAllText();
@@ -1115,7 +1181,7 @@
     }
     
     // ========================================
-    // PRODUCT MANAGEMENT
+    // PRODUCT MANAGEMENT WITH IMAGE UPLOAD
     // ========================================
     function loadProducts() {
         const saved = localStorage.getItem('taymour_products');
@@ -1179,10 +1245,11 @@
         saveProducts();
         displayProducts();
         
+        // Clear form
         document.getElementById('prodName').value = '';
         document.getElementById('prodPrice').value = '';
-        document.getElementById('prodImage').value = '';
         document.getElementById('prodDesc').value = '';
+        clearSelectedImage();
         
         showToast(t('productAdded'));
         document.getElementById('statProductsCount').innerText = products.length;
