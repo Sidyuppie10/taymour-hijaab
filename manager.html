@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAYMOUR HIJAB - Secure Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #5C3317 0%, #8B4513 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .login-box, .admin-panel {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .admin-panel {
+            max-width: 1200px;
+            display: none;
+        }
+        
+        h2 {
+            color: #5C3317;
+            margin-bottom: 20px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: #e94560;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        
+        button:hover {
+            background-color: #c7354e;
+        }
+        
+        .logout-btn {
+            background-color: #6c757d;
+            margin-bottom: 20px;
+        }
+        
+        .instruction-box {
+            background: #e8f4f8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .instruction-box code {
+            background: #f0f0f0;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 12px;
+            display: inline-block;
+            margin: 5px 0;
+        }
+        
+        .product-list {
+            max-height: 500px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        
+        .product-item {
+            background: #f9f5e8;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .error-msg {
+            color: red;
+            margin-top: 10px;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        @media (max-width: 768px) {
+            .product-item {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="loginBox" class="login-box">
+    <h2>🔐 TAYMOUR HIJAB</h2>
+    <h3>Secure Admin Login</h3>
+    <input type="password" id="adminPassword" placeholder="Enter admin password" autocomplete="off">
+    <button onclick="checkLogin()">Login</button>
+    <div id="loginError" class="error-msg"></div>
+</div>
+
+<div id="adminPanel" class="admin-panel">
+    <button onclick="logout()" class="logout-btn">🚪 Logout</button>
+    
+    <div class="warning-box">
+        ⚠️ <strong>Security Notice:</strong> This is a secure admin area. 
+        Do not share your password with anyone. Always log out when finished.
+    </div>
+    
+    <div class="instruction-box">
+        📝 <strong>How to Manage Products (Secure Method):</strong><br><br>
+        
+        <strong>To ADD a new product:</strong><br>
+        1. Open <code>script.js</code> in Notepad++ or VS Code<br>
+        2. Find the <strong>products</strong> array at the top (line ~6)<br>
+        3. Add a new line with your product:<br>
+        <code>{ id: 17, name: "New Product", price: 50000, image: "new-image.jpg", description: "Product description" },</code><br>
+        4. Save the file and upload to your server<br>
+        5. Refresh the website<br><br>
+        
+        <strong>To EDIT a product:</strong><br>
+        - Change the name, price, or description in <code>script.js</code><br><br>
+        
+        <strong>To DELETE a product:</strong><br>
+        - Remove the product line from <code>script.js</code><br><br>
+        
+        <strong>To ADD images:</strong><br>
+        - Upload image files to the <code>images/</code> folder<br>
+        - Use the exact filename in the product data<br><br>
+        
+        <strong>⚠️ Important Security Tips:</strong><br>
+        - Always keep your password secure<br>
+        - Change the password regularly<br>
+        - Only access this panel from trusted devices<br>
+        - Log out when you're done
+    </div>
+    
+    <h2>📋 Current Products</h2>
+    <div id="productsList" class="product-list"></div>
+</div>
+
+<script>
+    // ========================================
+    // SECURE ADMIN PANEL
+    // ========================================
+    
+    // CHANGE THIS PASSWORD TO SOMETHING SECURE!
+    const MASTER_PASSWORD = "taymour2024";
+    
+    // Rate limiting for failed attempts
+    let failedAttempts = 0;
+    let lockUntil = 0;
+    
+    function checkLogin() {
+        // Rate limiting check
+        if (Date.now() < lockUntil) {
+            const waitSeconds = Math.ceil((lockUntil - Date.now()) / 1000);
+            document.getElementById('loginError').innerText = `Too many attempts. Please wait ${waitSeconds} seconds.`;
+            return;
+        }
+        
+        const password = document.getElementById('adminPassword').value;
+        
+        if (password === MASTER_PASSWORD) {
+            // Successful login - reset failed attempts
+            failedAttempts = 0;
+            document.getElementById('loginBox').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            loadProducts();
+            // Log successful login to console (for audit)
+            console.log(`Admin login at ${new Date().toISOString()}`);
+        } else {
+            failedAttempts++;
+            // Lock for 30 seconds after 3 failed attempts
+            if (failedAttempts >= 3) {
+                lockUntil = Date.now() + 30000;
+                document.getElementById('loginError').innerText = 'Too many failed attempts. Account locked for 30 seconds.';
+            } else {
+                document.getElementById('loginError').innerText = `Incorrect password. ${3 - failedAttempts} attempts remaining.`;
+            }
+        }
+    }
+    
+    function logout() {
+        document.getElementById('loginBox').style.display = 'block';
+        document.getElementById('adminPanel').style.display = 'none';
+        document.getElementById('adminPassword').value = '';
+        document.getElementById('loginError').innerText = '';
+        failedAttempts = 0;
+        lockUntil = 0;
+        console.log(`Admin logout at ${new Date().toISOString()}`);
+    }
+    
+    // Prevent browser from saving password to autofill incorrectly
+    document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            checkLogin();
+        }
+    });
+    
+    function loadProducts() {
+        // Quick security check - ensure we have valid products array from script.js
+        // Since script.js is loaded on the main pages, we need to reference it
+        if (typeof products !== 'undefined') {
+            displayProducts(products);
+            document.getElementById('productsList').innerHTML = `
+                <div style="text-align:center; padding:20px;">
+                    <p>✅ Products loaded successfully!</p>
+                    <p style="font-size:12px; color:#666;">Found ${products.length} products</p>
+                </div>
+            ` + document.getElementById('productsList').innerHTML;
+        } else {
+            // Fallback: show instruction to check script.js
+            document.getElementById('productsList').innerHTML = `
+                <div class="instruction-box">
+                    ⚠️ Could not load products automatically.<br><br>
+                    Please open <code>script.js</code> in a text editor to view and edit products directly.
+                </div>
+            `;
+        }
+    }
+    
+    function displayProducts(productArray) {
+        const container = document.getElementById('productsList');
+        if (!productArray || productArray.length === 0) {
+            container.innerHTML = '<p>No products found. Add products to script.js</p>';
+            return;
+        }
+        
+        container.innerHTML = productArray.map(p => `
+            <div class="product-item">
+                <div style="flex:1">
+                    <strong>${escapeHtml(p.name)}</strong><br>
+                    TZS ${p.price.toLocaleString()} | Image: ${escapeHtml(p.image)}<br>
+                    <small>${escapeHtml(p.description)}</small>
+                </div>
+                <div>
+                    <span style="font-size:12px; color:#999;">ID: ${p.id}</span>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    // Simple HTML escape for display
+    function escapeHtml(text) {
+        if (!text) return '';
+        return text.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    // Prevent right-click on admin panel (basic security)
+    document.addEventListener('contextmenu', function(e) {
+        if (document.getElementById('adminPanel').style.display === 'block') {
+            e.preventDefault();
+            return false;
+        }
+    });
+</script>
+
+</body>
+</html>

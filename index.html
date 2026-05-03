@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAYMOUR HIJAB | Premium Hijab & Abaya Collection</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Security headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <h1>🧕 TAYMOUR HIJAB</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Our Collection</a></li>
+                <li><a href="#order">Order</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Welcome to <span class="shop-name">TAYMOUR HIJAB</span></h1>
+                <p>Premium quality hijabs and abayas — Modest fashion from Tanzania</p>
+                <a href="products.html" class="btn-primary">Shop Now →</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="featured" class="products">
+        <div class="container">
+            <h2>Featured Collection</h2>
+            <div class="products-grid" id="productsGrid"></div>
+            
+            <div class="explore-more-section">
+                <div class="explore-more-container">
+                    <h3>✨ Want to see more? ✨</h3>
+                    <p>Browse our complete collection of hijabs and abayas</p>
+                    <a href="products.html" class="btn-explore-large">📦 View Complete Collection →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="order" class="order">
+        <div class="container">
+            <h2>Your Order</h2>
+            <div class="order-container">
+                <form id="orderForm" onsubmit="event.preventDefault(); return false;">
+                    
+                    <div class="form-section">
+                        <h3>Customer Information</h3>
+                        <div class="form-group">
+                            <label>Full Name *</label>
+                            <input type="text" id="customerName" required maxlength="100">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number (WhatsApp) *</label>
+                            <input type="tel" id="customerPhone" placeholder="0712345678" required pattern="[0-9]{10,15}">
+                        </div>
+                        <div class="form-group">
+                            <label>Delivery Address *</label>
+                            <textarea id="address" rows="3" placeholder="Your full address for delivery" required maxlength="500"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Special Instructions (optional)</label>
+                            <textarea id="notes" rows="2" placeholder="Size, color preference, etc." maxlength="300"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Selected Products</h3>
+                        <div class="products-selector" id="productsSelector">
+                            <div class="empty-cart-message">
+                                <p>🛍️ No products added yet</p>
+                                <p class="small-text">Click "Add to Order" on any product to start</p>
+                            </div>
+                        </div>
+                        <div class="add-more-products-container">
+                            <a href="products.html" class="add-more-products-btn">➕ Add Another Product</a>
+                            <button type="button" class="clear-order-btn" onclick="clearEntireOrder()">🗑️ Clear All</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Order Summary</h3>
+                        <div id="orderSummary"></div>
+                        <div class="grand-total">
+                            <h2>Total Amount: <span id="grandTotal">TZS 0</span></h2>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-methods">
+                        <p><strong>Select Payment Method:</strong></p>
+                        <button type="button" onclick="payWithCard()" class="btn-card">💳 Pay with Card</button>
+                        <button type="button" onclick="payWithMobileMoney()" class="btn-mobile">📱 Pay with Mobile Money</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="container">
+            <h2>About Us</h2>
+            <div class="about-content">
+                <p>📍 <strong>Location:</strong> Dar es Salaam, Tanzania</p>
+                <p>📞 <strong>Phone:</strong> +255 712 345 678</p>
+                <p>💬 <strong>WhatsApp:</strong> +255 712 345 678</p>
+                <p>We accept: M-Pesa, TigoPesa, Airtel Money, Visa, Mastercard</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 TAYMOUR HIJAB. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
